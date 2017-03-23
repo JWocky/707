@@ -251,6 +251,147 @@ no. D6-3071-00
   	</view> 
  </sim>
 
+	<consumables>
+		<fuel>
+			<!--
+				consumables/fuel also includes definitions for the fuel system
+			-->
+			<valves>
+				<!-- cross-feed-valves -->
+				<xfeed n="0" type="int">1</xfeed>
+				<xfeed n="1" type="int">1</xfeed>
+				<xfeed n="2" type="int">1</xfeed>
+				<xfeed n="3" type="int">1</xfeed>
+
+				<!-- feeders -->
+				<tank n="0" type="int">1</tank>
+				<tank n="1" type="int">1</tank>
+				<tank n="2" type="int">1</tank>
+				<tank n="3" type="int">1</tank>
+
+				<!-- supply tanks -->
+				<tank n="5" type="int">1</tank>
+				<tank n="6" type="int">1</tank>
+				<tank n="7" type="int">1</tank>
+				<tank n="8" type="int">1</tank>
+				<tank n="9" type="int">1</tank>
+
+				<!-- reserve tanks -->
+				<tank n="4" type="int">1</tank>
+				<tank n="10" type="int">1</tank>
+			</valves>
+
+			<tank n="0">
+				<name>Feeder 1</name>
+				<tank-num type="int">0</tank-num>
+				<capacity-lbs type="float"> 250 </capacity-lbs>
+				<capacity-gal_us type="float"> 37.32 </capacity-gal_us>
+				<tank-type type="string">feeder</tank-type>
+				<target-lbs type="float">250.0</target-lbs>
+				<level-lbs alias="/fdm/jsbsim/propulsion/tank[0]/contents-lbs">250.00</level-lbs>
+			</tank>
+
+			<tank n="1">
+				<name>Feeder 2</name>
+				<tank-num type="int">1</tank-num>
+				<capacity-lbs type="float"> 250 </capacity-lbs>
+				<capacity-gal_us type="float"> 37.32 </capacity-gal_us>
+				<tank-type type="string">feeder</tank-type>
+				<target-lbs type="float">250.0</target-lbs>
+				<level-lbs alias="/fdm/jsbsim/propulsion/tank[1]/contents-lbs">250.00</level-lbs>
+			</tank>
+
+			<tank n="2">
+				<name>Feeder 3</name>
+				<tank-num type="int">0</tank-num>
+				<capacity-lbs type="float"> 250 </capacity-lbs>
+				<capacity-gal_us type="float"> 37.32 </capacity-gal_us>
+				<tank-type type="string">feeder</tank-type>
+				<target-lbs type="float">250.0</target-lbs>
+				<level-lbs alias="/fdm/jsbsim/propulsion/tank[2]/contents-lbs">250.00</level-lbs>
+			</tank>
+
+			<tank n="3">
+				<name>Feeder 4</name>
+				<tank-num type="int">0</tank-num>
+				<capacity-lbs type="float"> 250 </capacity-lbs>
+				<capacity-gal_us type="float"> 37.32 </capacity-gal_us>
+				<tank-type type="string">feeder</tank-type>
+				<target-lbs type="float">250.0</target-lbs>
+				<level-lbs alias="/fdm/jsbsim/propulsion/tank[3]/contents-lbs">250.00</level-lbs>
+			</tank>
+
+			<tank n="4">
+				<name>Reserve 4</name>
+				<capacity-lbs type="float"> 2941.00 </capacity-lbs>
+				<capacity-gal_us type="float"> 438.96 </capacity-gal_us>
+				<tank-num type="int">4</tank-num>
+				<tank-type type="string">reserve</tank-type>
+				<level-lbs alias="/fdm/jsbsim/propulsion/tank[4]/contents-lbs">700.00</level-lbs>
+			</tank>
+
+			<tank n="5">
+				<name>Main 4</name>
+				<capacity-lbs type="float"> 15564.00 </capacity-lbs>
+				<capacity-gal_us type="float"> 2322.99 </capacity-gal_us>
+				<tank-num type="int">5</tank-num>
+				<tank-type type="string">supply</tank-type>
+				<level-lbs alias="/fdm/jsbsim/propulsion/tank[5]/contents-lbs">4000.00</level-lbs>
+			</tank>
+
+			<tank n="6">
+				<name>Main 3</name>
+				<tank-num type="int">6</tank-num>
+				<capacity-lbs type="float"> 27262.00 </capacity-lbs>
+				<capacity-gal_us type="float"> 4068.96 </capacity-gal_us>
+				<tank-type type="string">supply</tank-type>
+				<valve type="int">1</valve>
+				<level-lbs alias="/fdm/jsbsim/propulsion/tank[6]/contents-lbs">5000.00</level-lbs>
+			</tank>
+
+			<tank n="7">
+				<name>Center</name>
+				<tank-num type="int">7</tank-num>
+				<capacity-lbs type="float"> 68293.00 </capacity-lbs>
+				<capacity-gal_us type="float"> 10192.96 </capacity-gal_us>
+				<tank-type type="string">supply</tank-type>
+				<level-lbs alias="/fdm/jsbsim/propulsion/tank[7]/contents-lbs">10000.00</level-lbs>
+			</tank>
+
+			<tank n="8">
+				<name>Main 2</name>
+				<tank-num type="int">8</tank-num>
+				<capacity-lbs type="float"> 27262.00 </capacity-lbs>
+				<capacity-gal_us type="float"> 4068.96 </capacity-gal_us>
+				<tank-type type="string">supply</tank-type>
+				<valve type="int">1</valve>
+				<level-lbs alias="/fdm/jsbsim/propulsion/tank[8]/contents-lbs">5000.00</level-lbs>
+			</tank>
+
+			<tank n="9">
+				<name>Main 1</name>
+				<capacity-lbs type="float"> 15564.00 </capacity-lbs>
+				<capacity-gal_us type="float"> 2322.99 </capacity-gal_us>
+				<tank-num type="int">9</tank-num>
+				<tank-type type="string">supply</tank-type>
+				<level-lbs alias="/fdm/jsbsim/propulsion/tank[9]/contents-lbs">4000.00</level-lbs>
+			</tank>
+
+			<tank n="10">
+				<name>Reserve 1</name>
+				<capacity-lbs type="float"> 2941.00 </capacity-lbs>
+				<capacity-gal_us type="float"> 438.96 </capacity-gal_us>
+				<tank-num type="int">10</tank-num>
+				<tank-type type="string">reserve</tank-type>
+				<level-lbs alias="/fdm/jsbsim/propulsion/tank[10]/contents-lbs">700.00</level-lbs>
+			</tank>
+
+		</fuel>
+	</consumables>
+
+
+
+
 	<nasal> 
 		<b707>		
 			<file>Aircraft/707/Nasal/shake.nas</file>

@@ -19,13 +19,13 @@ var c5 = props.globals.getNode("/fdm/jsbsim/inertia/pointmass-weight-lbs[5]"); #
 var c6 = props.globals.getNode("/fdm/jsbsim/inertia/pointmass-weight-lbs[6]"); # lugage rear
 
 # the tank
-var tfR4 = props.globals.getNode("/consumables/fuel/tank[0]/level-lbs");
-var tfM4 = props.globals.getNode("/consumables/fuel/tank[1]/level-lbs");
-var tfM3 = props.globals.getNode("/consumables/fuel/tank[2]/level-lbs");
-var tfC  = props.globals.getNode("/consumables/fuel/tank[3]/level-lbs");
-var tfM2 = props.globals.getNode("/consumables/fuel/tank[4]/level-lbs");
-var tfM1 = props.globals.getNode("/consumables/fuel/tank[5]/level-lbs");
-var tfR1 = props.globals.getNode("/consumables/fuel/tank[6]/level-lbs");
+var tfR4 = props.globals.getNode("/consumables/fuel/tank[4]/level-lbs");
+var tfM4 = props.globals.getNode("/consumables/fuel/tank[5]/level-lbs");
+var tfM3 = props.globals.getNode("/consumables/fuel/tank[6]/level-lbs");
+var tfC  = props.globals.getNode("/consumables/fuel/tank[7]/level-lbs");
+var tfM2 = props.globals.getNode("/consumables/fuel/tank[8]/level-lbs");
+var tfM1 = props.globals.getNode("/consumables/fuel/tank[9]/level-lbs");
+var tfR1 = props.globals.getNode("/consumables/fuel/tank[10]/level-lbs");
 
 var bp0 = props.globals.initNode("/b707/fuel/valves/boost-pump[0]",0,"BOOL");
 var bp1 = props.globals.initNode("/b707/fuel/valves/boost-pump[1]",0,"BOOL");
@@ -355,10 +355,10 @@ var WeightFuelDialog = func {
     kg.set("label", "kg");
     kg.set("halign", "left");
     
-    var tnames = ["Res 4", "Main 4", "Main 3", "Center", "Main 2", "Main 1", "Res 1"];
+    var tnames = ["Feeder1", "Feeder2", "Feeder3", "Feeder4", "Res 4", "Main 4", "Main 3", "Center", "Main 2", "Main 1", "Res 1"];
 
     var tanks = props.globals.getNode("/consumables/fuel").getChildren("tank");
-    for(var ti=0; ti<7; ti+=1) {
+    for(var ti=0; ti<size(tanks); ti+=1) {
         var t = tanks[ti];
         var tname = tnames[ti] ~ "";
 
@@ -370,7 +370,7 @@ var WeightFuelDialog = func {
 
         var tankprop = "/consumables/fuel/tank["~ti~"]";
 
-        var cap = t.getNode("capacity-gal_us", 0);
+        var cap = t.getNode("capacity-lbs", 0);
 
         # Hack, to ignore the "ghost" tanks created by the C++ code.
         if(cap == nil ) { continue; }
@@ -378,6 +378,9 @@ var WeightFuelDialog = func {
 
         # Ignore tanks of capacity 0
         if (cap == 0) { continue; }
+ 
+       # Ignore tanks that are not supply or reserve
+        if ((getprop("/consumables/fuel/tank["~ti~"]/tank-type")!="supply") and (getprop("/consumables/fuel/tank["~ti~"]/tank-type")!="reserve")) { continue; }
 
         var title = tcell(fuelTable, "text", ti+1, 0);
         title.set("label", tname);
@@ -392,7 +395,7 @@ var WeightFuelDialog = func {
         }
 
         var slider = tcell(fuelTable, "slider", ti+1, 2);
-        slider.set("property", tankprop ~ "/level-gal_us");
+        slider.set("property", tankprop ~ "/level-lbs");
         slider.set("live", 1);
         slider.set("min", 0);
         slider.set("max", cap);
@@ -713,8 +716,12 @@ var valve_pos = func(nr){
 }
 var shutoff_pos = func(nr) {
 	setprop("b707/fuel/valves/fuel-shutoff-pos["~nr~"]", 0);
-	settimer( func { setprop("b707/fuel/valves/fuel-shutoff-pos["~nr~"]", 1) }, 1.8 );
+	settimer( func { 
+		setprop("b707/fuel/valves/fuel-shutoff-pos["~nr~"]", 1);
+		print("fuel shutoff for "~nr);
+	}, 1.8 );
 }
+
 var dump_pos = func(nr) {
 	setprop("b707/fuel/valves/dump-valve-pos["~nr~"]", 0);
 	settimer( func { setprop("b707/fuel/valves/dump-valve-pos["~nr~"]", 1) }, 1.8 );
@@ -765,7 +772,7 @@ var engines_alive = func {
 		  
 		  ## SHUTOFF VALVE ## 
 		  if(n2 >= 50 and !s) {
-		      #print("Engine "~e.getIndex()~" without fuel - shutoff valve closed!");
+		      print("Engine "~e.getIndex()~" without fuel - shutoff valve closed! n2="~n2~" s="~s);
 		      c.setBoolValue(1);
 		  }
 		  
@@ -995,8 +1002,8 @@ var crossfeed_action = func {
 				var mNeu = tfM1.getValue() + tfR1.getValue();
 	    	var rNeu = 0;
 		}	
-		interpolate("/consumables/fuel/tank[6]/level-lbs", rNeu, 4);
-	  	interpolate("/consumables/fuel/tank[5]/level-lbs", mNeu, 4);
+		interpolate("/consumables/fuel/tank[10]/level-lbs", rNeu, 4);
+	  	interpolate("/consumables/fuel/tank[9]/level-lbs", mNeu, 4);
 	}
 	
 	if(pow > 20 and v5.getBoolValue() and vp5.getBoolValue() and tfR4.getValue() and !refuelAction){
@@ -1013,8 +1020,8 @@ var crossfeed_action = func {
 				var mNeu = tfM4.getValue() + tfR4.getValue();
 	    	var rNeu = 0;
 		}	
-		interpolate("/consumables/fuel/tank[0]/level-lbs", rNeu, 4);
-	    interpolate("/consumables/fuel/tank[1]/level-lbs", mNeu, 4);
+		interpolate("/consumables/fuel/tank[4]/level-lbs", rNeu, 4);
+	    interpolate("/consumables/fuel/tank[5]/level-lbs", mNeu, 4);
 	}
 	
 	####### test the status of the tanks
@@ -1151,21 +1158,22 @@ var crossfeed_action = func {
 		var ttempM1 = tfM1.getValue();
 		var ttempR1 = tfR1.getValue();
 			
-		setprop("/consumables/fuel/tank[6]/level-lbs", 0);
-		setprop("/consumables/fuel/tank[5]/level-lbs", 0);
-	  	setprop("/consumables/fuel/tank[4]/level-lbs", 0);		
-	  	setprop("/consumables/fuel/tank[3]/level-lbs", 0);
-	  	setprop("/consumables/fuel/tank[2]/level-lbs", 0);
-	  	setprop("/consumables/fuel/tank[1]/level-lbs", 0);
+		setprop("/consumables/fuel/tank[10]/level-lbs", 0);
+		setprop("/consumables/fuel/tank[9]/level-lbs", 0);
+	  	setprop("/consumables/fuel/tank[8]/level-lbs", 0);		
+	  	setprop("/consumables/fuel/tank[7]/level-lbs", 0);
+	  	setprop("/consumables/fuel/tank[6]/level-lbs", 0);
+	  	setprop("/consumables/fuel/tank[5]/level-lbs", 0);
+	  	setprop("/consumables/fuel/tank[4]/level-lbs", 0);
 	  	setprop("/consumables/fuel/total-fuel-lbs",0);
 
-		interpolate("/consumables/fuel/tank[6]/level-lbs", ttempR1, 1);
+		interpolate("/consumables/fuel/tank[4]/level-lbs", ttempR1, 1);
 		interpolate("/consumables/fuel/tank[5]/level-lbs", ttempM1, 1);
-	  	interpolate("/consumables/fuel/tank[4]/level-lbs", ttempM2, 1);		
-	  	interpolate("/consumables/fuel/tank[3]/level-lbs", ttempC, 1);
-	  	interpolate("/consumables/fuel/tank[2]/level-lbs", ttempM3, 1);
-	  	interpolate("/consumables/fuel/tank[1]/level-lbs", ttempM4, 1);
-	  	interpolate("/consumables/fuel/tank[0]/level-lbs", ttempR4, 1);
+	  	interpolate("/consumables/fuel/tank[6]/level-lbs", ttempM2, 1);		
+	  	interpolate("/consumables/fuel/tank[7]/level-lbs", ttempC, 1);
+	  	interpolate("/consumables/fuel/tank[8]/level-lbs", ttempM3, 1);
+	  	interpolate("/consumables/fuel/tank[9]/level-lbs", ttempM4, 1);
+	  	interpolate("/consumables/fuel/tank[10]/level-lbs", ttempR4, 1);
 	  	
 	  	settimer(func{ setprop("/b707/fuel/quantity-test",0) }, 0);			
 	}
@@ -1349,13 +1357,13 @@ var clean_or_refuel = func{
 					!getprop("/b707/fuel/valves/valve[5]")) {
 
 					if (total_fuel < request_kg and total_fuel < 72485.0) {
-						setprop("/consumables/fuel/tank[0]/level-kg", getprop("/consumables/fuel/tank[0]/level-kg") + 0.5);
-						setprop("/consumables/fuel/tank[1]/level-kg", getprop("/consumables/fuel/tank[1]/level-kg") + 3);
-						setprop("/consumables/fuel/tank[2]/level-kg", getprop("/consumables/fuel/tank[2]/level-kg") + 3);
-						setprop("/consumables/fuel/tank[3]/level-kg", getprop("/consumables/fuel/tank[3]/level-kg") + 6);
-						setprop("/consumables/fuel/tank[4]/level-kg", getprop("/consumables/fuel/tank[4]/level-kg") + 3);
+						setprop("/consumables/fuel/tank[4]/level-kg", getprop("/consumables/fuel/tank[4]/level-kg") + 0.5);
 						setprop("/consumables/fuel/tank[5]/level-kg", getprop("/consumables/fuel/tank[5]/level-kg") + 3);
-						setprop("/consumables/fuel/tank[6]/level-kg", getprop("/consumables/fuel/tank[6]/level-kg") + 0.5);
+						setprop("/consumables/fuel/tank[6]/level-kg", getprop("/consumables/fuel/tank[6]/level-kg") + 3);
+						setprop("/consumables/fuel/tank[7]/level-kg", getprop("/consumables/fuel/tank[7]/level-kg") + 6);
+						setprop("/consumables/fuel/tank[8]/level-kg", getprop("/consumables/fuel/tank[8]/level-kg") + 3);
+						setprop("/consumables/fuel/tank[9]/level-kg", getprop("/consumables/fuel/tank[9]/level-kg") + 3);
+						setprop("/consumables/fuel/tank[10]/level-kg", getprop("/consumables/fuel/tank[10]/level-kg") + 0.5);
 
 						if(loop_id > 3) fuel_truck.setValue(1.2); 
 
@@ -1380,13 +1388,13 @@ var clean_or_refuel = func{
 
 					if (getprop("consumables/fuel/total-fuel-kg")) {
 
-						setprop("/consumables/fuel/tank[0]/level-kg", getprop("/consumables/fuel/tank[0]/level-kg") - 0.5);
-						setprop("/consumables/fuel/tank[1]/level-kg", getprop("/consumables/fuel/tank[1]/level-kg") - 3);
-						setprop("/consumables/fuel/tank[2]/level-kg", getprop("/consumables/fuel/tank[2]/level-kg") - 3);
-						setprop("/consumables/fuel/tank[3]/level-kg", getprop("/consumables/fuel/tank[3]/level-kg") - 6);
-						setprop("/consumables/fuel/tank[4]/level-kg", getprop("/consumables/fuel/tank[4]/level-kg") - 3);
+						setprop("/consumables/fuel/tank[4]/level-kg", getprop("/consumables/fuel/tank[4]/level-kg") - 0.5);
 						setprop("/consumables/fuel/tank[5]/level-kg", getprop("/consumables/fuel/tank[5]/level-kg") - 3);
-						setprop("/consumables/fuel/tank[6]/level-kg", getprop("/consumables/fuel/tank[6]/level-kg") - 0.5);
+						setprop("/consumables/fuel/tank[6]/level-kg", getprop("/consumables/fuel/tank[6]/level-kg") - 3);
+						setprop("/consumables/fuel/tank[7]/level-kg", getprop("/consumables/fuel/tank[7]/level-kg") - 6);
+						setprop("/consumables/fuel/tank[8]/level-kg", getprop("/consumables/fuel/tank[8]/level-kg") - 3);
+						setprop("/consumables/fuel/tank[9]/level-kg", getprop("/consumables/fuel/tank[9]/level-kg") - 3);
+						setprop("/consumables/fuel/tank[10]/level-kg", getprop("/consumables/fuel/tank[10]/level-kg") - 0.5);
 
 						if(loop_id > 3) fuel_truck.setValue(1.2);
 
@@ -1418,8 +1426,42 @@ setlistener("/b707/ground-service/fuel-truck/enable", func{
 	clean_or_refuel();
 },1,0);
 
+setlistener("/fdm/jsbsim/propulsion/tank[4]/contents-lbs", func{ 
+	setprop("/consumables/fuel/tank[4]/level-kg", getprop("consumables/fuel/tank[4]/level-lbs")*0.45359237);
+	setprop("/consumables/fuel/tank[4]/level-gal_us", getprop("consumables/fuel/tank[4]/level-lbs")/6.7);
+});
 
+setlistener("/fdm/jsbsim/propulsion/tank[5]/contents-lbs", func{ 
+	setprop("/consumables/fuel/tank[5]/level-kg", getprop("consumables/fuel/tank[5]/level-lbs")*0.45359237);
+	setprop("/consumables/fuel/tank[5]/level-gal_us", getprop("consumables/fuel/tank[5]/level-lbs")/6.7);
+});
 
+setlistener("/fdm/jsbsim/propulsion/tank[6]/contents-lbs", func{ 
+	setprop("/consumables/fuel/tank[6]/level-kg", getprop("consumables/fuel/tank[6]/level-lbs")*0.45359237);
+	setprop("/consumables/fuel/tank[6]/level-gal_us", getprop("consumables/fuel/tank[6]/level-lbs")/6.7);
+});
+
+setlistener("/fdm/jsbsim/propulsion/tank[7]/contents-lbs", func{ 
+	setprop("/consumables/fuel/tank[7]/level-kg", getprop("consumables/fuel/tank[7]/level-lbs")*0.45359237);
+	setprop("/consumables/fuel/tank[7]/level-gal_us", getprop("consumables/fuel/tank[7]/level-lbs")/6.7);
+});
+
+setlistener("/fdm/jsbsim/propulsion/tank[8]/contents-lbs", func{ 
+	setprop("/consumables/fuel/tank[8]/level-kg", getprop("consumables/fuel/tank[8]/level-lbs")*0.45359237);
+	setprop("/consumables/fuel/tank[8]/level-gal_us", getprop("consumables/fuel/tank[8]/level-lbs")/6.7);
+});
+
+setlistener("/fdm/jsbsim/propulsion/tank[9]/contents-lbs", func{ 
+	setprop("/consumables/fuel/tank[9]/level-kg", getprop("consumables/fuel/tank[9]/level-lbs")*0.45359237);
+	setprop("/consumables/fuel/tank[9]/level-us_gal", getprop("consumables/fuel/tank[9]/level-lbs")/6.7);
+});
+
+setlistener("/fdm/jsbsim/propulsion/tank[10]/contents-lbs", func{ 
+	setprop("/consumables/fuel/tank[10]/level-kg", getprop("consumables/fuel/tank[10]/level-lbs")*0.45359237);
+	setprop("/consumables/fuel/tank[10]/level-gal_us", getprop("consumables/fuel/tank[10]/level-lbs")/6.7);
+});
+
+print("The unspeakable fuel and payload dialog ready!");
 
 
 

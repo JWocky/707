@@ -73,7 +73,7 @@
 		 <ixx unit="SLUG*FT2">   2322405 </ixx>
 		 <iyy unit="SLUG*FT2">   2886669 </iyy>
 		 <izz unit="SLUG*FT2">   5260000 </izz>
-		 <emptywt unit="LBS" >    137526 </emptywt>
+		 <emptywt unit="LBS" >    136526 </emptywt> <!--- 1000 lbs less to compensate for the feeder tanks -->
 		<location name="CG" unit="IN">
 			<x>  0.0 </x>
 			<y>  0.0 </y>
@@ -248,7 +248,7 @@
       <roll>   0.00 </roll>
       <yaw>   0.00 </yaw>
     </orient>
-    <feed>5</feed>
+    <feed>0</feed>
     <thruster file="direct">
      <location unit="IN">
       <x>  22.11 </x>
@@ -274,7 +274,7 @@
       <roll>   0.00 </roll>
       <yaw>   0.00 </yaw>
     </orient>
-    <feed>4</feed>
+    <feed>1</feed>
     <thruster file="direct">
      <location unit="IN">
       <x>-164.20 </x>
@@ -326,7 +326,7 @@
       <roll>   0.00 </roll>
       <yaw>   0.00 </yaw>
     </orient>
-    <feed>1</feed>
+    <feed>3</feed>
     <thruster file="direct">
      <location unit="IN">
       <x>  22.11 </x>
@@ -340,9 +340,57 @@
      </orient>
     </thruster>
   </engine>
-  
+
+  		<tank type="FUEL" number="0"> <!-- Feeder 1 -->
+    <location unit="IN">
+      <x>  22.11 </x>
+      <y>-586.50 </y>
+      <z> -46.00 </z>
+    </location>
+			<priority>1</priority>
+			<capacity unit="LBS"> 250 </capacity>
+			<contents unit="LBS"> 250 </contents>
+			<type> JP-8 </type>
+		</tank>
+
+		<tank type="FUEL" number="1"> <!-- Feeder 2 -->
+    <location unit="IN">
+      <x>-164.20 </x>
+      <y>-393.62 </y>
+      <z> -77.00 </z>
+    </location>
+			<priority>1</priority>
+			<capacity unit="LBS"> 250 </capacity>
+			<contents unit="LBS"> 250 </contents>
+			<type> JP-8 </type>
+		</tank>
+
+		<tank type="FUEL" number="2"> <!-- Feeder 3 -->
+    <location unit="IN">
+      <x>-164.20 </x>
+      <y> 393.62 </y>
+      <z> -77.00 </z>
+    </location>
+			<priority>1</priority>
+			<capacity unit="LBS"> 250 </capacity>
+			<contents unit="LBS"> 250 </contents>
+			<type> JP-8 </type>
+		</tank>
+
+		<tank type="FUEL" number="3"> <!-- Feeder 4 -->
+    <location unit="IN">
+      <x>  22.11 </x>
+      <y> 586.50 </y>
+      <z> -46.00 </z>
+    </location>
+			<priority>1</priority>
+			<capacity unit="LBS"> 250 </capacity>
+			<contents unit="LBS"> 250 </contents>
+			<type> JP-8 </type>
+		</tank>
+
   <!-- Reserve 4 tank right -->
-  <tank type="FUEL" number="0">
+  <tank type="FUEL" number="4">
      <location unit="IN">
        <x>   39.37 </x>
        <y>  700.00 </y>
@@ -352,7 +400,7 @@
      <contents unit="LBS">  700.00 </contents>
   </tank>
   <!-- Main 4 tank right -->
-  <tank type="FUEL" number="1">
+  <tank type="FUEL" number="5">
      <location unit="IN">
        <x>  120.12 </x>
        <y>  507.10 </y>
@@ -362,7 +410,7 @@
      <contents unit="LBS">  4000.00 </contents>
   </tank>
   <!-- Main 3 tank right -->
-  <tank type="FUEL" number="2">
+  <tank type="FUEL" number="6">
      <location unit="IN">
        <x>  -74.10 </x>
        <y>  176.30 </y>
@@ -372,7 +420,7 @@
      <contents unit="LBS">  5000.00 </contents>
   </tank>
   <!-- center tank -->
-  <tank type="FUEL" number="3">
+  <tank type="FUEL" number="7">
      <location unit="IN">
        <x>   0.0 </x>
        <y>   0.0 </y>
@@ -382,7 +430,7 @@
      <contents unit="LBS"> 10000.00 </contents>
   </tank>
   <!-- Main 2 tank left -->
-  <tank type="FUEL" number="4">
+  <tank type="FUEL" number="8">
      <location unit="IN">
        <x>  -74.10 </x>
        <y> -176.30 </y>
@@ -392,7 +440,7 @@
      <contents unit="LBS">  5000.00 </contents>
   </tank>
   <!-- Main 1 tank left --> 
-  <tank type="FUEL" number="5">
+  <tank type="FUEL" number="9">
      <location unit="IN">
        <x>  120.12 </x>
        <y> -507.10 </y>
@@ -402,7 +450,7 @@
      <contents unit="LBS">  4000.00 </contents>
   </tank>  
   <!-- Reserve 1 tank left -->
-  <tank type="FUEL" number="6">
+  <tank type="FUEL" number="10">
      <location unit="IN">
        <x>   39.37 </x>
        <y> -700.00 </y>
@@ -414,6 +462,8 @@
 
  </propulsion> 
  
+	<system file="Fuelsystem"/>
+
  <system file="pushback"/>
 
  <flight_control name="707-MK">

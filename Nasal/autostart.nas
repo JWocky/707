@@ -720,28 +720,28 @@ var startup = func
 		settimer( func{
 			if(step == 7 and auto_procedure.getValue()){
 				setprop("/b707/fuel/valves/fuel-shutoff[0]", 1);
-				b707.shutoff_pos(0);
+				b707.shutoff_pos(5);
 				toggle_switch2();
 			}
 		}, t); t += 0.2;
 		settimer( func{
 			if(step == 7 and auto_procedure.getValue()){
 				setprop("/b707/fuel/valves/fuel-shutoff[1]", 1);
-				b707.shutoff_pos(1);
+				b707.shutoff_pos(6);
 				toggle_switch2();
 			}
 		}, t); t += 0.2;
 		settimer( func{
 			if(step == 7 and auto_procedure.getValue()){
 				setprop("/b707/fuel/valves/fuel-shutoff[2]", 1);
-				b707.shutoff_pos(2);
+				b707.shutoff_pos(7);
 				toggle_switch2();
 			}
 		}, t); t += 0.2;
 		settimer( func{
 			if(step == 7 and auto_procedure.getValue()){
 				setprop("/b707/fuel/valves/fuel-shutoff[3]", 1);
-				b707.shutoff_pos(3);
+				b707.shutoff_pos(9);
 				toggle_switch2();				
 				screen.log.write("Look down to your throttle levers on center pedestal.", 1, 1, 1);
 				step = 8;
@@ -820,6 +820,10 @@ var startup = func
 			}
 		}, t); t += 0.5;
 		settimer( func{
+
+print("step="~step);
+print("auto="~auto_procedure.getValue());
+print("run3="~run3.getBoolValue());
 			if(step == 10 and auto_procedure.getValue() and run3.getBoolValue()){
 				setprop("controls/engines/engine[3]/starter", 1);
 				toggle_switch2();

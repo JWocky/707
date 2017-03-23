@@ -1,0 +1,381 @@
+<?xml version="1.0"?>  
+
+<system name="Fuelsystem">
+
+	<channel name="fuel pumping">
+
+		<!-- Main tanks feeding engines -->
+		<switch name="systems/Fuelsystem/MainRight4">
+			<default value="1"/>
+			<test logic="OR" value="0">
+				/consumables/fuel/valves/tank[5] EQ 0
+				propulsion/tank[5]/contents-lbs LE 0
+			</test>
+			<output>propulsion/tank[5]/feed4</output>
+		</switch>
+
+		<switch name="systems/Fuelsystem/MainRight3">
+			<default value="1"/>
+			<test logic="OR" value="0">
+				/consumables/fuel/valves/tank[6] EQ 0
+				propulsion/tank[6]/contents-lbs LE 0
+			</test>
+			<output>propulsion/tank[6]/feed3</output>
+		</switch>
+
+		<switch name="systems/Fuelsystem/MainLeft2">
+			<default value="1"/>
+			<test logic="OR" value="0">
+				/consumables/fuel/valves/tank[8] EQ 0
+				propulsion/tank[8]/contents-lbs LE 0
+			</test>
+			<output>propulsion/tank[8]/feed2</output>
+		</switch>
+
+		<switch name="systems/Fuelsystem/MainLeft1">
+			<default value="1"/>
+			<test logic="OR" value="0">
+				/consumables/fuel/valves/tank[9] EQ 0
+				propulsion/tank[9]/contents-lbs LE 0
+			</test>
+			<output>propulsion/tank[9]/feed1</output>
+		</switch>
+
+		<!-- feeding from center tank -->
+		<switch name="systems/Fuelsystem/feedfromCenter1">
+			<default value="1"/>
+			<test logic="OR" value="0">
+				/consumables/fuel/valves/xfeed[0] EQ 0
+				propulsion/tank[7]/contents-lbs LE 0
+			</test>
+			<output>propulsion/tank[7]/feed1</output>
+		</switch>
+
+		<switch name="systems/Fuelsystem/feedfromCenter2">
+			<default value="1"/>
+			<test logic="OR" value="0">
+				/consumables/fuel/valves/xfeed[1] EQ 0
+				propulsion/tank[7]/contents-lbs LE 0
+			</test>
+			<output>propulsion/tank[7]/feed2</output>
+		</switch>
+
+		<switch name="systems/Fuelsystem/feedfromCenter3">
+			<default value="1"/>
+			<test logic="OR" value="0">
+				/consumables/fuel/valves/xfeed[2] EQ 0
+				propulsion/tank[7]/contents-lbs LE 0
+			</test>
+			<output>propulsion/tank[7]/feed3</output>
+		</switch>
+
+		<switch name="systems/Fuelsystem/feedfromCenter4">
+			<default value="1"/>
+			<test logic="OR" value="0">
+				/consumables/fuel/valves/xfeed[3] EQ 0
+				propulsion/tank[7]/contents-lbs LE 0
+			</test>
+			<output>propulsion/tank[7]/feed4</output>
+		</switch>
+		
+		<!-- count active supply tanks feeding engines -->
+		<fcs_function name="systems/Fuelsystem/countfeedengine1">
+			<description>count all tanks feeding engine 1</description>
+			<function>
+				<sum>
+					<property>propulsion/tank[9]/feed1</property>
+					<property>propulsion/tank[7]/feed1</property>
+				</sum>
+			</function>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/countfeedengine2">
+			<description>count all tanks feeding engine 2</description>
+			<function>
+				<sum>
+					<property>propulsion/tank[8]/feed2</property>
+					<property>propulsion/tank[7]/feed2</property>
+				</sum>
+			</function>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/countfeedengine3">
+			<description>count all tanks feeding engine 3</description>
+			<function>
+				<sum>
+					<property>propulsion/tank[6]/feed3</property>
+					<property>propulsion/tank[7]/feed3</property>
+				</sum>
+			</function>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/countfeedengine4">
+			<description>count all tanks feeding engine 4</description>
+			<function>
+				<sum>
+					<property>propulsion/tank[5]/feed4</property>
+					<property>propulsion/tank[7]/feed4</property>
+				</sum>
+			</function>
+		</fcs_function>
+
+		<!-- count needs per engine -->
+		<fcs_function name="systems/Fuelsystem/needed1">
+			<description>calculate how much lbs are needed for engine 1</description>
+			<function>
+				<difference>
+					<property>/consumables/fuel/tank[0]/target-lbs</property>
+					<property>propulsion/tank[0]/contents-lbs</property>
+				</difference>
+			</function>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/needed2">
+			<description>calculate how much lbs are needed for engine 2</description>
+			<function>
+				<difference>
+					<property>/consumables/fuel/tank[1]/target-lbs</property>
+					<property>propulsion/tank[1]/contents-lbs</property>
+				</difference>
+			</function>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/needed3">
+			<description>calculate how much lbs are needed for engine 3</description>
+			<function>
+				<difference>
+					<property>/consumables/fuel/tank[2]/target-lbs</property>
+					<property>propulsion/tank[2]/contents-lbs</property>
+				</difference>
+			</function>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/needed4">
+			<description>calculate how much lbs are needed for engine 4</description>
+			<function>
+				<difference>
+					<property>/consumables/fuel/tank[3]/target-lbs</property>
+					<property>propulsion/tank[3]/contents-lbs</property>
+				</difference>
+			</function>
+		</fcs_function>
+
+		<!-- needs per tank and engine -->
+		<fcs_function name="systems/Fuelsystem/needed1pertk">
+			<description>calculate how much lbs are needed per tank for engine 1</description>
+			<function>
+				<quotient>
+					<property>systems/Fuelsystem/needed1</property>
+					<property>systems/Fuelsystem/countfeedengine1</property>
+				</quotient>
+			</function>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/needed2pertk">
+			<description>calculate how much lbs are needed per tank for engine 2</description>
+			<function>
+				<quotient>
+					<property>systems/Fuelsystem/needed2</property>
+					<property>systems/Fuelsystem/countfeedengine2</property>
+				</quotient>
+			</function>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/needed3pertk">
+			<description>calculate how much lbs are needed per tank for engine 3</description>
+			<function>
+				<quotient>
+					<property>systems/Fuelsystem/needed3</property>
+					<property>systems/Fuelsystem/countfeedengine3</property>
+				</quotient>
+			</function>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/needed4pertk">
+			<description>calculate how much lbs are needed per tank for engine 4</description>
+			<function>
+				<quotient>
+					<property>systems/Fuelsystem/needed4</property>
+					<property>systems/Fuelsystem/countfeedengine4</property>
+				</quotient>
+			</function>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/neededfromMainRight5">
+			<description>calculate how much lbs are needed from Main Right 5 for engine4</description>
+			<function>
+				<product>
+					<product>
+						<property>systems/Fuelsystem/needed4pertk</property>
+						<property>propulsion/tank[5]/feed4</property>
+					</product>
+					<value>-1</value>
+				</product>
+			</function>
+			<output>propulsion/tank[5]/external-flow-rate-pps-needed</output>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/neededfromMainRight4">
+			<description>calculate how much lbs are needed from Main Right 4 for engine3</description>
+			<function>
+				<product>
+					<product>
+						<property>systems/Fuelsystem/needed3pertk</property>
+						<property>propulsion/tank[6]/feed3</property>
+					</product>
+					<value>-1</value>
+				</product>
+			</function>
+			<output>propulsion/tank[6]/external-flow-rate-pps-needed</output>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/neededfromMainLeft2">
+			<description>calculate how much lbs are needed from Main Left 2 for engine2</description>
+			<function>
+				<product>
+					<product>
+						<property>systems/Fuelsystem/needed2pertk</property>
+						<property>propulsion/tank[8]/feed2</property>
+					</product>
+					<value>-1</value>
+				</product>
+			</function>
+			<output>propulsion/tank[8]/external-flow-rate-pps-needed</output>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/neededfromMainLeft1">
+			<description>calculate how much lbs are needed from Main Left1 for engine1</description>
+			<function>
+				<product>
+					<product>
+						<property>systems/Fuelsystem/needed1pertk</property>
+						<property>propulsion/tank[9]/feed1</property>
+					</product>
+					<value>-1</value>
+				</product>
+			</function>
+			<output>propulsion/tank[9]/external-flow-rate-pps-needed</output>
+		</fcs_function>
+
+		<fcs_function name="systems/Fuelsystem/neededCenter">
+			<description>calculate how much lbs are needed from Center tank</description>
+			<function>
+				<product>
+					<sum>
+						<product>
+							<property>systems/Fuelsystem/needed1pertk</property>
+							<property>propulsion/tank[7]/feed1</property>
+						</product>
+						<product>
+							<property>systems/Fuelsystem/needed2pertk</property>
+							<property>propulsion/tank[7]/feed2</property>
+						</product>
+						<product>
+							<property>systems/Fuelsystem/needed3pertk</property>
+							<property>propulsion/tank[7]/feed3</property>
+						</product>
+						<product>
+							<property>systems/Fuelsystem/needed4pertk</property>
+							<property>propulsion/tank[7]/feed4</property>
+						</product>
+					</sum>
+					<value>-1</value>
+				</product>
+			</function>
+			<output>propulsion/tank[7]/external-flow-rate-pps-needed</output>
+		</fcs_function>
+
+		<switch name="systems/Fuelsystem/getfromtank5">
+			<description>actually get the fuel from tank 4</description>
+			<default value="propulsion/tank[5]/external-flow-rate-pps-needed"/>
+			<test logic="OR" value="0">
+				systems/Fuelsystem/countfeedengine1 LE 0
+			</test>
+			<output>propulsion/tank[5]/external-flow-rate-pps</output>
+		</switch>
+
+		<switch name="systems/Fuelsystem/getfromtank6">
+			<description>actually get the fuel from tank 6</description>
+			<default value="propulsion/tank[6]/external-flow-rate-pps-needed"/>
+			<test logic="OR" value="0">
+				systems/Fuelsystem/countfeedengine2 LE 0
+			</test>
+			<output>propulsion/tank[6]/external-flow-rate-pps</output>
+		</switch>
+
+		<switch name="systems/Fuelsystem/getfromtank8">
+			<description>actually get the fuel from tank 8</description>
+			<default value="propulsion/tank[8]/external-flow-rate-pps-needed"/>
+			<test logic="OR" value="0">
+				systems/Fuelsystem/countfeedengine3 LE 0
+			</test>
+			<output>propulsion/tank[8]/external-flow-rate-pps</output>
+		</switch>
+
+		<switch name="systems/Fuelsystem/getfromtank9">
+			<description>actually get the fuel from tank 9</description>
+			<default value="propulsion/tank[9]/external-flow-rate-pps-needed"/>
+			<test logic="OR" value="0">
+				systems/Fuelsystem/countfeedengine4 LE 0
+			</test>
+			<output>propulsion/tank[9]/external-flow-rate-pps</output>
+		</switch>
+
+		<!-- This is the center tank -->
+		<switch name="systems/Fuelsystem/getfromtank7">
+			<description>actually get the fuel from tank 7 (Center)</description>
+			<default value="propulsion/tank[7]/external-flow-rate-pps-needed"/>
+			<test logic="AND" value="0">
+				systems/Fuelsystem/countfeedengine1 LE 0
+				systems/Fuelsystem/countfeedengine2 LE 0
+				systems/Fuelsystem/countfeedengine3 LE 0
+				systems/Fuelsystem/countfeedengine4 LE 0
+			</test>
+			<output>propulsion/tank[7]/external-flow-rate-pps</output>
+		</switch>
+
+		<switch name="systems/Fuelsystem/puttotank0">
+			<description>actually put the fuel to tank 0</description>
+			<default value="systems/Fuelsystem/needed1"/>
+			<test logic="OR" value="0">
+				/consumables/fuel/valves/tank[0] EQ 0
+				systems/Fuelsystem/countfeedengine1 LE 0
+			</test>
+			<output>propulsion/tank[0]/external-flow-rate-pps</output>
+		</switch>
+
+		<switch name="systems/Fuelsystem/puttotank1">
+			<description>actually put the fuel to tank 1</description>
+			<default value="systems/Fuelsystem/needed2"/>
+			<test logic="OR" value="0">
+				/consumables/fuel/valves/tank[1] EQ 0
+				systems/Fuelsystem/countfeedengine2 LE 0
+			</test>
+			<output>propulsion/tank[1]/external-flow-rate-pps</output>
+		</switch>
+
+		<switch name="systems/Fuelsystem/puttotank2">
+			<description>actually put the fuel to tank 2</description>
+			<default value="systems/Fuelsystem/needed3"/>
+			<test logic="OR" value="0">
+				/consumables/fuel/valves/tank[2] EQ 0
+				systems/Fuelsystem/countfeedengine3 LE 0
+			</test>
+			<output>propulsion/tank[2]/external-flow-rate-pps</output>
+		</switch>
+
+		<switch name="systems/Fuelsystem/puttotank3">
+			<description>actually put the fuel to tank 3</description>
+			<default value="systems/Fuelsystem/needed4"/>
+			<test logic="OR" value="0">
+				/consumables/fuel/valves/tank[3] EQ 0
+				systems/Fuelsystem/countfeedengine4 LE 0
+			</test>
+			<output>propulsion/tank[3]/external-flow-rate-pps</output>
+		</switch>
+
+	</channel>
+
+</system>
+
+
